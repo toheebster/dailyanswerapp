@@ -19,7 +19,9 @@
     "preset": "jest-expo"
   },
   "dependencies": {
+    "csvtojson": "^1.1.9",
     "expo": "^23.0.4",
+    "fs": "0.0.1-security",
     "react": "16.0.0",
     "react-native": "0.50.3",
     "react-native-calendars": "^1.14.2",
