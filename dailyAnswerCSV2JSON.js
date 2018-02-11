@@ -1,21 +1,28 @@
-const filepath = '/Users/toheeb/Desktop/projects/dailyanswerapp/daily.csv'
+const filepath = './daily.csv'
 var csv = require('csvtojson'),
-	fs = require('fs')
+	fs = require('fs'),
+	df = require('dateformat')
 
 var daily = {}
+console.log('starting csv parsing')
 csv().fromFile(filepath)
 .on('json', (jsonData) => {
-	JSON.parse(JSON.stringify(jsonData))
+	JSON.parse(JSON.stringify(jsonData)) // i'm not sure why i'm doing this
+
 	// index each entry by the data :D
-	var date = jsonData.date
+	var date = convertDate(jsonData.date)
 	if(date) {
+		jsonData.date = date
 		daily[date] = jsonData
+	}
+	else {
+		console.log('there is a broken date in the csv file - check the entry with the title: ' + jsonData.title )
 	}
 })
 .on('done', (error) => {
-	console.log('done parsing json')
+	console.log('done csv parsing -- json can be found at ' + __dirname + '/daily.json')
 	save(daily, 'daily.json');
-	console.log(daily)
+	// console.log(daily)
 })
 
 function save(results, filename) {
@@ -29,4 +36,12 @@ function save(results, filename) {
 
 function escapeRegExp(text) {
   return text.replace("/'/g", "TEST");
+}
+
+function convertDate(dateString) {
+	var d = new Date(dateString);
+	if(d instanceof Date) {
+		return df(d, 'yyyy-mm-dd');
+	}
+	return null
 }
