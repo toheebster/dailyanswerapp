@@ -40,7 +40,7 @@ export default class DailyAnswerScreen extends Component {
           // console.log(dailies)
           var daily = dailiesJSON[strTime]
           if (daily) {
-            daily.height = Math.max(800, Math.floor(Math.random() * 150))
+            daily.height = Math.max(900, Math.floor(Math.random() * 150))
             this.state.dailies[strTime].push(daily)
           } else {
             this.state.dailies[strTime].push({
@@ -60,11 +60,31 @@ export default class DailyAnswerScreen extends Component {
   }
 
   renderItem(daily) {
+    // var passageReference = daily.passage
+    // console.log("hihi")
+    // console.log(passageReference)
+    // passageReference = passageReference.substring(passageReference.lastIndexOf('(')+1, passageReference.lastIndexOf(')'))
+    var titleStyle = {fontWeight: 'bold', fontFamily: 'Helvetica-Bold', fontSize: 20, color: '#333333' // toheeb change to percentage using npm install react-native-viewport-units --save
+    }
+    var passageStyle = { fontSize: 10, fontFamily: 'Hiragino Sans', fontWeight: '100'
+    }
+    var contentStyle = { fontFamily: 'Hiragino Sans', fontSize: 12, fontWeight: '400'
+    }
+    var ampStyle = { fontFamily: 'Hiragino Sans', fontSize: 12, fontWeight: '500', color: '#333333'
+    }
     return (
       <View style={[styles.daily, {height: daily.height}]}>
-        <Text>{daily.date}</Text>
-        <Text>{daily.title}</Text>
-        <Text>{daily.content}</Text>
+      <View>
+        <Text style={titleStyle}>{daily.title}{"\n"}</Text>
+        <Text style={passageStyle}>{daily.passage}{"\n"}</Text>
+        <Text style={{textAlign: "center"}}>{"---"}{"\n"}</Text>
+        <Text style={contentStyle}>{daily.content}{"\n"}</Text>
+      </View>
+        <View>
+          <Text style={ampStyle}>{"Application: "}{daily.application}{"\n"}</Text>
+          <Text style={ampStyle}>{"Memory Verse: "}{daily["memory-verse"]}{"\n"}</Text>
+          <Text style={ampStyle}>{"Prayer: "}{daily.prayer}</Text>
+        </View>
       </View>
     );
   }
@@ -96,7 +116,10 @@ const styles = StyleSheet.create({
     marginLeft: 10,
     marginTop: 17,
     borderWidth: 3,
-    borderColor: '#e6f0ff'
+    borderColor: '#e3e2e9',
+    padding: 15,
+    paddingTop: 25
+    // borderColor: '#e6f0ff'
   },
   emptyDate: {
     height: 15,
