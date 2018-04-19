@@ -68,7 +68,7 @@ export default class DailyAnswerScreen extends Component {
     }, 2000);
   }
 
-  getHeightForDaily(daily) {
+  getHeightForDaily(daily) { // TO DO : break logic out for android as well
     // each line for the average screen size is about 50 characters long and about 10pixels tall
     let heightPerLine = this.getHeightPerLine()
     let roughEstimateOfCharactersPerLine = 50
