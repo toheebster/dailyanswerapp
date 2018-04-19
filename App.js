@@ -1,6 +1,7 @@
 import React from 'react';
-import { StyleSheet, Text, View } from 'react-native';
+import { StyleSheet, Text, View, Image } from 'react-native';
 import DailyAnswerScreen from './src/dailyAnswer';
+import WelcomeScreen from './src/welcome';
 import { StackNavigator } from 'react-navigation';
 
 export default class App extends React.Component {

@@ -1,10 +1,11 @@
-const filepath = './daily.csv'
+const filepath = './dailyprod.csv'
 var csv = require('csvtojson'),
 	fs = require('fs'),
 	df = require('dateformat')
 
 var daily = {}
 console.log('starting csv parsing')
+
 csv().fromFile(filepath)
 .on('json', (jsonData) => {
 	JSON.parse(JSON.stringify(jsonData)) // i'm not sure why i'm doing this
@@ -21,7 +22,8 @@ csv().fromFile(filepath)
 })
 .on('done', (error) => {
 	console.log('done csv parsing -- json can be found at ' + __dirname + '/daily.json')
-	save(daily, 'daily.json');
+	// save(daily, 'daily.json');
+	save(daily, 'dailyprod.json');
 	// console.log(daily)
 })
 

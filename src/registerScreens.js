@@ -3,4 +3,5 @@ import DailyAnswerScreen from './dailyAnswer';
 
 export function registerScreens() {
   Navigation.registerComponent('DailyAnswer', () => DailyAnswerScreen);
+
 }

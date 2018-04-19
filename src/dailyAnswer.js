@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import { Text, View, StyleSheet, Button, Dimensions } from 'react-native';
 import { Agenda } from 'react-native-calendars';
-import dailiesJSON from '../daily.json'
+import dailiesJSON from '../dailyprod.json'
 
 export default class DailyAnswerScreen extends Component {
   constructor(props) {
@@ -9,64 +9,92 @@ export default class DailyAnswerScreen extends Component {
     this.state = {
       dailies: {} // short for devotionals
     }
+    this.maxDate = this.getMaxDate()
   }
 
   render() {
     return (
         <Agenda
-          items = {this.state.dailies}
+          items ={this.state.dailies}
           loadItemsForMonth = {this.loadDailies.bind(this)}
-          selected= {this.timeToString(new Date())}
+          selected={this.selectedDay()}
           renderItem={this.renderItem.bind(this)}
           renderEmptyDate={this.renderEmptyDate.bind(this)}
           rowHasChanged={this.rowHasChanged.bind(this)}
-          current={new Date()}
-          minDate={'2017-05-10'}
-          pastScrollRange={3}
-          futureScrollRange={0}
+          minDate={'2018-04-01'}
+          maxDate={this.getMaxDate()}
+          pastScrollRange={0}
+          futureScrollRange={3}
           hideKnob={false}
         />
     )
   }
+
+  getMaxDate() {
+    var keys = Object.keys(dailiesJSON)
+    var lastDailyDate = keys[keys.length-1]
+    return dailiesJSON[lastDailyDate].date // this is so convoluted
+  }
+
+  selectedDay() {
+    var today = this.timeToString(new Date())
+    return (Date.parse(today) < Date.parse(this.maxDate)) ? today : this.maxDate
+  }
+
+  isValidDate(date) {
+    return (Date.parse(date) < Date.parse(this.maxDate))
+  }
+
 
   loadDailies(day) {
     setTimeout(() => {
       for (var i = -1; i < 30; i++) {
         const timeInX = day.timestamp + i * 24 * 60 * 60 * 1000;
         const strTime = this.timeToString(timeInX);
-        this.state.dailies[strTime] = [] // if no daily for that day - change later because every available day must have a daily
-        const numItems = 1;
-        for (let j = 0; j < numItems; j++) {
-          // console.log(dailies)
+        // if(this.isValidDate(strTime)) {
+          console.log(strTime)
+          this.state.dailies[strTime] = [] // if no daily for that day - change later because every available day must have a daily
           var daily = dailiesJSON[strTime]
           if (daily) {
-            daily.height = Math.max(900, Math.floor(Math.random() * 150))
+            console.log(`height for daily is ${this.getHeightForDaily(daily)}`)
+            daily.height = this.getHeightForDaily(daily)
             this.state.dailies[strTime].push(daily)
-          } else {
-            this.state.dailies[strTime].push({
-              content: "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Mauris rhoncus lorem vel auctor vehicula. Sed consectetur, nunc nec dictum dictum, sapien nisl convallis ipsum, eget tempus turpis quam quis lacus. Donec ac commodo urna, ac vestibulum leo. Integer tincidunt eget sapien eu tincidunt. Etiam sodales in arcu ut consectetur. Maecenas in turpis sagittis, luctus libero a, condimentum mauris. Nullam at justo molestie, sodales enim nec, vehicula semLorem ipsum dolor sit amet, consectetur adipiscing elit. Mauris rhoncus lorem vel auctor vehicula. Sed consectetur, nunc nec dictum dictum, sapien nisl convallis ipsum, eget tempus turpis quam quis lacus. Donec ac commodo urna, ac vestibulum leo. Integer tincidunt eget sapien eu tincidunt. Etiam sodales in arcu ut consectetur. Maecenas in turpis sagittis, luctus libero a, condimentum mauris. Nullam at justo molestie, sodales enim nec, vehicula semLorem ipsum dolor sit amet, consectetur adipiscing elit. Mauris rhoncus lorem vel auctor vehicula. Sed consectetur, nunc nec dictum dictum, sapien nisl convallis ipsum, eget tempus turpis quam quis lacus. Donec ac commodo urna, ac vestibulum leo. Integer tincidunt eget sapien eu tincidunt. Etiam sodales in arcu ut consectetur. Maecenas in turpis sagittis, luctus libero a, condimentum mauris. Nullam at justo molestie, sodales enim nec, vehicula semLorem ipsum dolor sit amet, consectetur adipiscing elit. Mauris rhoncus lorem vel auctor vehicula. Sed consectetur, nunc nec dictum dictum, sapien nisl convallis ipsum, eget tempus turpis quam quis lacus. Donec ac commodo urna, ac vestibulum leo. Integer tincidunt eget sapien eu tincidunt. Etiam sodales in arcu ut consectetur. Maecenas in turpis sagittis, luctus libero a, condimentum mauris. Nullam at justo molestie, sodales enim nec, vehicula sem",
-              height: Math.max(800, Math.floor(Math.random() * 150)),
-              title: "This is a title"
-            });
           }
-        }
+        // } else {
+        //   continue
+        // }
       }
       const newDailies = {};
       Object.keys(this.state.dailies).forEach(key => {newDailies[key] = this.state.dailies[key];});
       this.setState({
         dailies: newDailies
       });
-    }, 1000);
+    }, 2000);
+  }
+
+  getHeightForDaily(daily) {
+    // each line for the average screen size is about 50 characters long and about 10pixels tall
+    let roughEstimateOfCharactersPerLine = 50
+    let heightPerLine = 17
+    let heightForExtraSpace = 350
+    let numberOfCharactersInDaily = this.getCharacterCountForDaily(daily)
+    let numberOfLinesInDaily = numberOfCharactersInDaily / roughEstimateOfCharactersPerLine
+    let height = numberOfLinesInDaily * heightPerLine
+    return height + heightForExtraSpace
+    // console.log(`the screen width ${Dimensions.get('window').width}`)
+  }
+
+  getCharacterCountForDaily(daily) {
+    var count = 0;
+    const values = Object.keys(daily).map(key => count += daily[key].length)
+    console.log(count)
+    return count
   }
 
   renderItem(daily) {
-    // var passageReference = daily.passage
-    // console.log("hihi")
-    // console.log(passageReference)
-    // passageReference = passageReference.substring(passageReference.lastIndexOf('(')+1, passageReference.lastIndexOf(')'))
     var titleStyle = {fontWeight: 'bold', fontFamily: 'Helvetica-Bold', fontSize: 20, color: '#333333' // toheeb change to percentage using npm install react-native-viewport-units --save
     }
-    var passageStyle = { fontSize: 10, fontFamily: 'Hiragino Sans', fontWeight: '100'
+    var passageStyle = { fontSize: 12, fontFamily: 'Hiragino Sans', fontWeight: '100'
     }
     var contentStyle = { fontFamily: 'Hiragino Sans', fontSize: 12, fontWeight: '400'
     }
@@ -90,9 +118,10 @@ export default class DailyAnswerScreen extends Component {
   }
 
   renderEmptyDate() {
-    return (
-      <View style={styles.emptyDate}><Text>No daily answer to display</Text></View>
-    );
+    // return (
+    //   <View style={styles.emptyDate}><Text>No daily answer to display</Text></View>
+    // );
+    return
   }
 
   rowHasChanged(r1, r2) {
