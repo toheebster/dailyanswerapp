@@ -88,11 +88,8 @@ export default class DailyAnswerScreen extends Component {
     else if (screenWidth > 400 && screenWidth < 415) { // iphone 6/7 plus
       return 15
     }
-    else if (screenWidth > 300 && screenWidth < 325) { // iphone 5
+    else {// (screenWidth > 300 && screenWidth < 325) { // iphone 5 & 4
       return 21
-    }
-    else { // iphone 4
-      return 25
     }
   }
 
