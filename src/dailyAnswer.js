@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { Text, View, StyleSheet, Button, Dimensions } from 'react-native';
+import { Text, View, StyleSheet, Button, Dimensions, Platform } from 'react-native';
 import { Agenda } from 'react-native-calendars';
 import dailiesJSON from '../dailyprod.json'
 
@@ -51,18 +51,14 @@ export default class DailyAnswerScreen extends Component {
       for (var i = -1; i < 30; i++) {
         const timeInX = day.timestamp + i * 24 * 60 * 60 * 1000;
         const strTime = this.timeToString(timeInX);
-        // if(this.isValidDate(strTime)) {
-          console.log(strTime)
           this.state.dailies[strTime] = [] // if no daily for that day - change later because every available day must have a daily
           var daily = dailiesJSON[strTime]
           if (daily) {
             console.log(`height for daily is ${this.getHeightForDaily(daily)}`)
+            console.log(`the screen width ${Dimensions.get('window').width}`)
             daily.height = this.getHeightForDaily(daily)
             this.state.dailies[strTime].push(daily)
           }
-        // } else {
-        //   continue
-        // }
       }
       const newDailies = {};
       Object.keys(this.state.dailies).forEach(key => {newDailies[key] = this.state.dailies[key];});
@@ -74,14 +70,30 @@ export default class DailyAnswerScreen extends Component {
 
   getHeightForDaily(daily) {
     // each line for the average screen size is about 50 characters long and about 10pixels tall
+    let heightPerLine = this.getHeightPerLine()
     let roughEstimateOfCharactersPerLine = 50
-    let heightPerLine = 17
     let heightForExtraSpace = 350
     let numberOfCharactersInDaily = this.getCharacterCountForDaily(daily)
     let numberOfLinesInDaily = numberOfCharactersInDaily / roughEstimateOfCharactersPerLine
     let height = numberOfLinesInDaily * heightPerLine
     return height + heightForExtraSpace
-    // console.log(`the screen width ${Dimensions.get('window').width}`)
+    console.log(`the screen width ${Dimensions.get('window').width}`)
+  }
+
+  getHeightPerLine() {
+    let screenWidth = Dimensions.get('window').width
+    if (screenWidth > 370 && screenWidth < 400) { // iphone x & 6/7 - 375
+      return 17
+    }
+    else if (screenWidth > 400 && screenWidth < 415) { // iphone 6/7 plus
+      return 15
+    }
+    else if (screenWidth > 300 && screenWidth < 325) { // iphone 5
+      return 21
+    }
+    else { // iphone 4
+      return 25
+    }
   }
 
   getCharacterCountForDaily(daily) {
