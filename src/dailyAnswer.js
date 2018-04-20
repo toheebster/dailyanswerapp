@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { Text, View, StyleSheet, Button, Dimensions, Platform } from 'react-native';
+import { Text, View, StyleSheet, Dimensions, Image } from 'react-native';
 import { Agenda } from 'react-native-calendars';
 import dailiesJSON from '../dailyprod.json'
 
@@ -72,16 +72,16 @@ export default class DailyAnswerScreen extends Component {
     // each line for the average screen size is about 50 characters long and about 10pixels tall
     let heightPerLine = this.getHeightPerLine()
     let roughEstimateOfCharactersPerLine = 50
-    let heightForExtraSpace = 350
+    let heightBuffer = 320
     let numberOfCharactersInDaily = this.getCharacterCountForDaily(daily)
     let numberOfLinesInDaily = numberOfCharactersInDaily / roughEstimateOfCharactersPerLine
     let height = numberOfLinesInDaily * heightPerLine
-    return height + heightForExtraSpace
+    return height + heightBuffer
     console.log(`the screen width ${Dimensions.get('window').width}`)
   }
 
   getHeightPerLine() {
-    let screenWidth = Dimensions.get('window').width
+    let screenWidth = this.getScreenWidth()
     if (screenWidth > 370 && screenWidth < 400) { // iphone x & 6/7 - 375
       return 17
     }
@@ -93,6 +93,10 @@ export default class DailyAnswerScreen extends Component {
     }
   }
 
+  getScreenWidth() {
+    return Dimensions.get('window').width
+  }
+
   getCharacterCountForDaily(daily) {
     var count = 0;
     const values = Object.keys(daily).map(key => count += daily[key].length)
@@ -101,26 +105,27 @@ export default class DailyAnswerScreen extends Component {
   }
 
   renderItem(daily) {
-    var titleStyle = {fontWeight: 'bold', fontFamily: 'Helvetica-Bold', fontSize: 20, color: '#333333' // toheeb change to percentage using npm install react-native-viewport-units --save
-    }
-    var passageStyle = { fontSize: 12, fontFamily: 'Hiragino Sans', fontWeight: '100'
-    }
-    var contentStyle = { fontFamily: 'Hiragino Sans', fontSize: 12, fontWeight: '400'
-    }
-    var ampStyle = { fontFamily: 'Hiragino Sans', fontSize: 12, fontWeight: '500', color: '#333333'
-    }
     return (
       <View style={[styles.daily, {height: daily.height}]}>
       <View>
-        <Text style={titleStyle}>{daily.title}{"\n"}</Text>
-        <Text style={passageStyle}>{daily.passage}{"\n"}</Text>
-        <Text style={{textAlign: "center"}}>{"---"}{"\n"}</Text>
-        <Text style={contentStyle}>{daily.content}{"\n"}</Text>
+        <Text style={styles.titleStyle}>{daily.title}{"\n"}</Text>
+        <Text style={styles.passageStyle}>{daily.passage}{"\n"}</Text>
+        <Image
+          style={styles.delimiter}
+          source={require('./img/delimiter.png')}
+        />
+        <Text style={styles.contentStyle}>{"\n"}{daily.content}{"\n"}</Text>
       </View>
         <View>
-          <Text style={ampStyle}>{"Application: "}{daily.application}{"\n"}</Text>
-          <Text style={ampStyle}>{"Memory Verse: "}{daily["memory-verse"]}{"\n"}</Text>
-          <Text style={ampStyle}>{"Prayer: "}{daily.prayer}</Text>
+          <View>
+            <Text style={styles.ampStyle}>{"Application: "}{daily.application}</Text>
+          </View>
+          <View>
+            <Text style={styles.ampStyle}>{"Memory Verse: "}{daily["memory-verse"]}</Text>
+          </View>
+          <View>
+            <Text style={styles.ampStyle}>{"Prayer: "}{daily.prayer}</Text>
+          </View>
         </View>
       </View>
     );
@@ -165,6 +170,15 @@ const styles = StyleSheet.create({
     paddingTop: 30
   },
   headers: {
+  },
+  titleStyle: {fontWeight: 'bold', fontFamily: 'Helvetica-Bold', fontSize: 20, color: '#333333'}, // toheeb change to percentage using npm install react-native-viewport-units --save
+  passageStyle: {fontSize: 12, fontFamily: 'Hiragino Sans', fontWeight: '100'},
+  contentStyle: { fontFamily: 'Hiragino Sans', fontSize: 12, fontWeight: '400'},
+  ampStyle: { fontFamily: 'Hiragino Sans', fontSize: 12, fontWeight: '500', color: '#333333'},
+  delimiter: { // maintain width/height 20% ratio
+    alignSelf: 'center',
+    width: 100,
+    height: 20
+  },
 
-  }
 });

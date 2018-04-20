@@ -8,8 +8,12 @@ console.log('starting csv parsing')
 
 csv().fromFile(filepath)
 .on('json', (jsonData) => {
-	JSON.parse(JSON.stringify(jsonData)) // i'm not sure why i'm doing this
+	Object.keys(jsonData).map(key => {
+		jsonData[key] = jsonData[key].toString('utf8').replace(/\uFFFD/g, '\'')
 
+		console.log(jsonData[key])
+	})
+	// JSON.parse(JSON.stringify(jsonData)) // i'm not sure why i'm doing this
 	// index each entry by the data :D
 	var date = convertDate(jsonData.date)
 	if(date) {
@@ -19,6 +23,7 @@ csv().fromFile(filepath)
 	else {
 		console.log('there is a broken date in the csv file - check the entry with the title: ' + jsonData.title )
 	}
+
 })
 .on('done', (error) => {
 	console.log('done csv parsing -- json can be found at ' + __dirname + '/daily.json')
@@ -41,6 +46,7 @@ function escapeRegExp(text) {
 }
 
 function convertDate(dateString) {
+	console.log(dateString)
 	var d = new Date(dateString);
 	if(d instanceof Date) {
 		return df(d, 'yyyy-mm-dd');
