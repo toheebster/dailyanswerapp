@@ -41,10 +41,6 @@ function save(results, filename) {
 	})
 }
 
-function escapeRegExp(text) {
-  return text.replace("/'/g", "TEST");
-}
-
 function convertDate(dateString) {
 	console.log(dateString)
 	var d = new Date(dateString);
