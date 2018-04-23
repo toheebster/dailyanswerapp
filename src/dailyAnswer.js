@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import { AppRegistry, Text, View, StyleSheet, Dimensions, Image } from 'react-native';
 import WelcomeScreen from './welcome'
-import { DeviceType, DeviceModel, DeviceWidth } from './helpers'
+import { Device, DeviceType, DeviceModel, DeviceWidth } from './helpers'
 import { Agenda } from 'react-native-calendars';
 import Swiper from 'react-native-swiper';
 import dailiesJSON from '../dailyprod.json';
@@ -100,30 +100,13 @@ export default class DailyAnswerScreen extends Component {
   getHeightForDaily(daily) { // TO DO : break logic out for android as well
 
     // each line for the average screen size is about 50 characters long and about 10pixels tall
-    let heightPerLine = this.getHeightPerLine()
+    let heightPerLine = Device.heightPerLineForDevice
     let roughEstimateOfCharactersPerLine = this.getRoughEstimateOfCharactersPerLine()
     let heightBuffer = 345
     let numberOfCharactersInDaily = this.getCharacterCountForDaily(daily)
     let numberOfLinesInDaily = numberOfCharactersInDaily / roughEstimateOfCharactersPerLine
     let height = numberOfLinesInDaily * heightPerLine
     return height + heightBuffer
-  }
-
-  getHeightPerLine() {
-    switch (DeviceType()) {
-      case DeviceModel.IPHONE_REGULAR:
-        return 17
-        break
-      case DeviceModel.IPHONE_PLUSX:
-        return 15
-        break
-      case DeviceModel.IPHONE_BABY:
-        return 21
-        break
-      default:
-        return 21
-
-    }
   }
 
   getRoughEstimateOfCharactersPerLine() { // get this out for ipad
