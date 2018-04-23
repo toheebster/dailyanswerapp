@@ -12,8 +12,13 @@ export const DeviceModel = {
 }
 
 export const Device = {
-  leftAlignmentForDevice: getLeftAlignmentForDevice(),
-  heightPerLineForDevice: getHeightPerLineForDevice()
+  leftAlignmentForDate: getLeftAlignmentForDateForDevice(),
+  heightPerLine: getHeightPerLineForDevice(),
+  roughEstimateOfCharactersPerLine: getRoughEstimateOfCharactersPerLineForDevice(),
+  contentFontSize: getContentFontSizeForDevice(),
+  dateFontSize: getDateFontSizeForDevice(),
+  dailyTitleFontSize: getDailyTitleFontSizeForDevice(),
+  width: Dimensions.get('window').width
 }
 
 export function DeviceType() {
@@ -41,27 +46,27 @@ export function DeviceType() {
   }
 }
 
-export function DeviceTypeIs(type) {
+export function isDeviceType(type) {
   return DeviceType() === type
 }
 
-function getLeftAlignmentForDevice() {
-  if (DeviceTypeIs(DeviceModel.IPHONE_PLUSX)) { // plus
+function getLeftAlignmentForDateForDevice() {
+  if (isDeviceType(DeviceModel.IPHONE_PLUSX)) { // plus
     return -104
   }
-  else if (DeviceTypeIs(DeviceModel.IPHONE_REGULAR)) { // regular
+  else if (isDeviceType(DeviceModel.IPHONE_REGULAR)) { // regular
      return -147
   }
-  else if (DeviceTypeIs(DeviceModel.IPHONE_BABY)) {
+  else if (isDeviceType(DeviceModel.IPHONE_BABY)) {
     return -197
   }
-  else if (DeviceTypeIs(DeviceModel.IPAD_9POINT7)) {
+  else if (isDeviceType(DeviceModel.IPAD_9POINT7)) {
     return 250
   }
-  else if (DeviceTypeIs(DeviceModel.IPAD_10POINT5)) {
+  else if (isDeviceType(DeviceModel.IPAD_10POINT5)) {
     return 313
   }
-  else if (DeviceTypeIs(DeviceModel.IPAD_12POINT9)) {
+  else if (isDeviceType(DeviceModel.IPAD_12POINT9)) {
     return 500
   }
   else { // baby
@@ -80,32 +85,118 @@ function getHeightPerLineForDevice() {
     case DeviceModel.IPHONE_BABY:
       return 21
       break
+    case DeviceModel.IPAD_12POINT9:
+      return 32
     default:
       return 21
 
   }
 }
 
-function fontSizeForDevice() {
-  if (DeviceTypeIs(DeviceModel.IPHONE_PLUSX)) {
-    return -104
+function getContentFontSizeForDevice() {
+  if (isDeviceType(DeviceModel.IPHONE_PLUSX)) {
+    return 14
   }
-  else if (DeviceTypeIs(DeviceModel.IPHONE_REGULAR)) {
-     return -147
+  else if (isDeviceType(DeviceModel.IPHONE_REGULAR)) {
+     return 14
   }
-  else if (DeviceTypeIs(DeviceModel.IPHONE_BABY)) {
-    return -197
+  else if (isDeviceType(DeviceModel.IPHONE_BABY)) {
+    return 14
   }
-  else if (DeviceTypeIs(DeviceModel.IPAD_9POINT7)) {
-    return 250
+  else if (isDeviceType(DeviceModel.IPAD_9POINT7)) {
+    return 18.5
   }
-  else if (DeviceTypeIs(DeviceModel.IPAD_10POINT5)) {
-
+  else if (isDeviceType(DeviceModel.IPAD_10POINT5)) {
+    return 18
   }
-  else if (DeviceTypeIs(DeviceModel.IPAD_12POINT9)) {
-
+  else if (isDeviceType(DeviceModel.IPAD_12POINT9)) {
+    return 22
   }
 }
 
+function getRoughEstimateOfCharactersPerLineForDevice() { // get this out for ipad
+  // ipad 12.9 -> 1024
+  // ipad 10.5 -> 834
+  // ipad 9.7 -> 768
+  switch (DeviceType()) {
+    case DeviceModel.IPHONE_BABY:
+      return 43
+      break
+    case DeviceModel.IPHONE_REGULAR:
+      return 44
+      break
+    case DeviceModel.IPHONE_PLUSX:
+      return 45
+      break
+    case DeviceModel.IPAD_12POINT9:
+      return 90
+      break
+    case DeviceModel.IPAD_10POINT5:
+      return 80
+      break
+    case DeviceModel.IPAD_9POINT7:
+      return 65
+      break
+    default:
+      return 60
+  }
+}
 
-export const DeviceWidth = Dimensions.get('window').width
+function getDateFontSizeForDevice() {
+
+  switch (DeviceType()) {
+    case DeviceModel.IPAD_12POINT9:
+      return 38
+      break
+    case DeviceModel.IPAD_10POINT5:
+      return 30
+      break
+    case DeviceModel.IPAD_9POINT7:
+      return 27
+      break
+    default:
+      return 22
+  }
+}
+
+function getDailyTitleFontSizeForDevice() {
+
+  switch (DeviceType()) {
+    case DeviceModel.IPAD_12POINT9:
+      return 34
+      break
+    case DeviceModel.IPAD_10POINT5:
+      return 26
+      break
+    case DeviceModel.IPAD_9POINT7:
+      return 23
+      break
+    default:
+      return 20
+  }
+}
+
+function getDefaultHeightForDailyForDevice() {
+  switch (DeviceType()) {
+    case DeviceModel.IPHONE_BABY:
+      return 1300
+      break
+    case DeviceModel.IPHONE_REGULAR:
+      return 1400
+      break
+    case DeviceModel.IPHONE_PLUSX:
+      return 1300
+      break
+    case DeviceModel.IPAD_12POINT9:
+      return 1500
+      break
+    case DeviceModel.IPAD_10POINT5:
+      return 1500
+      break
+    case DeviceModel.IPAD_9POINT7:
+      return 1500
+      break
+    default:
+      return 1500
+  }
+}

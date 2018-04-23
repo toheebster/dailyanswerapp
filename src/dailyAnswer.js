@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import { AppRegistry, Text, View, StyleSheet, Dimensions, Image } from 'react-native';
 import WelcomeScreen from './welcome'
-import { Device, DeviceType, DeviceModel, DeviceWidth } from './helpers'
+import { Device } from './helpers'
 import { Agenda } from 'react-native-calendars';
 import Swiper from 'react-native-swiper';
 import dailiesJSON from '../dailyprod.json';
@@ -98,10 +98,9 @@ export default class DailyAnswerScreen extends Component {
   }
 
   getHeightForDaily(daily) { // TO DO : break logic out for android as well
-
     // each line for the average screen size is about 50 characters long and about 10pixels tall
-    let heightPerLine = Device.heightPerLineForDevice
-    let roughEstimateOfCharactersPerLine = this.getRoughEstimateOfCharactersPerLine()
+    let heightPerLine = Device.heightPerLine
+    let roughEstimateOfCharactersPerLine = Device.roughEstimateOfCharactersPerLine
     let heightBuffer = 345
     let numberOfCharactersInDaily = this.getCharacterCountForDaily(daily)
     let numberOfLinesInDaily = numberOfCharactersInDaily / roughEstimateOfCharactersPerLine
@@ -109,41 +108,8 @@ export default class DailyAnswerScreen extends Component {
     return height + heightBuffer
   }
 
-  getRoughEstimateOfCharactersPerLine() { // get this out for ipad
-    // ipad 12.9 -> 1024
-    // ipad 10.5 -> 834
-    // ipad 9.7 -> 768
-    console.log(DeviceType())
-    switch (DeviceType()) {
-      case DeviceModel.IPHONE_BABY:
-        return 43
-        break
-      case DeviceModel.IPHONE_REGULAR:
-        return 44
-        break
-      case DeviceModel.IPHONE_PLUSX:
-        return 45
-        break
-      case DeviceModel.IPAD_12POINT9:
-        return 90
-        break
-      case DeviceModel.IPAD_10POINT5:
-        return 80
-        break
-      case DeviceModel.IPAD_9POINT7:
-        return 65
-        break
-      default:
-        return 60
-    }
-  }
-
-  getScreenWidth() {
-    return Dimensions.get('window').width
-  }
-
   isBigPhone() {
-    return DeviceWidth > 14
+    return Device.width > 14
   }
 
   getCharacterCountForDaily(daily) {
@@ -184,9 +150,6 @@ export default class DailyAnswerScreen extends Component {
   }
 
   renderEmptyDate() {
-    // return (
-    //   <View style={styles.emptyDate}><Text>No daily answer to display</Text></View>
-    // );
     return
   }
 
@@ -225,10 +188,10 @@ const styles = StyleSheet.create({
   },
   headers: {
   },
-  titleStyle: {fontWeight: 'bold', fontFamily: 'Helvetica-Bold', fontSize: 20, color: '#333333'}, // toheeb change to percentage using npm install react-native-viewport-units --save
-  passageStyle: {fontSize: 14, fontFamily: 'Damascus', fontWeight: '400'},
-  contentStyle: { fontFamily: 'Damascus', fontSize: 14, fontWeight: '400'},
-  ampStyle: { fontFamily: 'Damascus', fontSize: 14, fontWeight: '400'},
+  titleStyle: {fontWeight: 'bold', fontFamily: 'Helvetica-Bold', fontSize: Device.dailyTitleFontSize, color: '#333333'}, // toheeb change to percentage using npm install react-native-viewport-units --save
+  passageStyle: {fontSize: Device.contentFontSize, fontFamily: 'Damascus', fontWeight: '400'},
+  contentStyle: { fontFamily: 'Damascus', fontSize: Device.contentFontSize, fontWeight: '400'},
+  ampStyle: { fontFamily: 'Damascus', fontSize: Device.contentFontSize, fontWeight: '400'},
   delimiter: { // maintain width/height 20% ratio
     alignSelf: 'center',
     width: 100,
