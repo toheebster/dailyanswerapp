@@ -1,7 +1,9 @@
 import React, { Component } from 'react';
-import { Text, View, StyleSheet, Dimensions, Image } from 'react-native';
+import { AppRegistry, Text, View, StyleSheet, Dimensions, Image } from 'react-native';
+import WelcomeScreen from './welcome'
 import { Agenda } from 'react-native-calendars';
-import dailiesJSON from '../dailyprod.json'
+import Swiper from 'react-native-swiper';
+import dailiesJSON from '../dailyprod.json';
 
 export default class DailyAnswerScreen extends Component {
   constructor(props) {
@@ -12,8 +14,20 @@ export default class DailyAnswerScreen extends Component {
     this.maxDate = this.getMaxDate()
   }
 
+  shouldComponentUpdate(nextProps, nextState) {
+    if (this.state.dailies === nextState.dailies) {
+      return false
+    }
+    return true
+  }
+
   render() {
     return (
+      <Swiper
+        style={{}}
+        showsButtons={false}
+        showsPagination={false}
+        loop={false}>
         <Agenda
           items ={this.state.dailies}
           loadItemsForMonth = {this.loadDailies.bind(this)}
@@ -24,9 +38,12 @@ export default class DailyAnswerScreen extends Component {
           minDate={'2018-04-01'}
           maxDate={this.getMaxDate()}
           pastScrollRange={0}
-          futureScrollRange={3}
+          futureScrollRange={2}
           hideKnob={false}
         />
+        <WelcomeScreen>
+        </WelcomeScreen>
+      </Swiper>
     )
   }
 
@@ -45,19 +62,30 @@ export default class DailyAnswerScreen extends Component {
     return (Date.parse(date) < Date.parse(this.maxDate))
   }
 
+  isBad(object) {
+    return object == null
+          || object == undefined
+          || object == NaN
+          || object == ''
+  }
+
 
   loadDailies(day) {
     setTimeout(() => {
-      for (var i = -1; i < 30; i++) {
+      for (var i = -1; i < 90; i++) {
         const timeInX = day.timestamp + i * 24 * 60 * 60 * 1000;
         const strTime = this.timeToString(timeInX);
           this.state.dailies[strTime] = [] // if no daily for that day - change later because every available day must have a daily
           var daily = dailiesJSON[strTime]
-          if (daily) {
-            console.log(`height for daily is ${this.getHeightForDaily(daily)}`)
-            console.log(`the screen width ${Dimensions.get('window').width}`)
-            daily.height = this.getHeightForDaily(daily)
+          var defaultDailyHeight = this.isBigPhone() ? 1300 : 1500 // baby iphones will need bigger defualt height bc of smaller widths
+          if (!this.isBad(daily)) {
+            var calculatedHeightForDaily = this.getHeightForDaily(daily)
+            if (!daily.height) {
+              daily.height = !this.isBad(calculatedHeightForDaily) ? calculatedHeightForDaily : defaultDailyHeight
+            }
             this.state.dailies[strTime].push(daily)
+          } else {
+            console.log(`Bad daily or date index alert. Date index string is ${strTime}`)
           }
       }
       const newDailies = {};
@@ -72,12 +100,11 @@ export default class DailyAnswerScreen extends Component {
     // each line for the average screen size is about 50 characters long and about 10pixels tall
     let heightPerLine = this.getHeightPerLine()
     let roughEstimateOfCharactersPerLine = 50
-    let heightBuffer = 320
+    let heightBuffer = 345
     let numberOfCharactersInDaily = this.getCharacterCountForDaily(daily)
     let numberOfLinesInDaily = numberOfCharactersInDaily / roughEstimateOfCharactersPerLine
     let height = numberOfLinesInDaily * heightPerLine
     return height + heightBuffer
-    console.log(`the screen width ${Dimensions.get('window').width}`)
   }
 
   getHeightPerLine() {
@@ -85,7 +112,7 @@ export default class DailyAnswerScreen extends Component {
     if (screenWidth > 370 && screenWidth < 400) { // iphone x & 6/7 - 375
       return 17
     }
-    else if (screenWidth > 400 && screenWidth < 415) { // iphone 6/7 plus
+    else if (screenWidth > 400 && screenWidth < 420) { // iphone 6/7 plus
       return 15
     }
     else {// (screenWidth > 300 && screenWidth < 325) { // iphone 5 & 4
@@ -97,10 +124,13 @@ export default class DailyAnswerScreen extends Component {
     return Dimensions.get('window').width
   }
 
+  isBigPhone() {
+    return this.getScreenWidth() > 14
+  }
+
   getCharacterCountForDaily(daily) {
     var count = 0;
     const values = Object.keys(daily).map(key => count += daily[key].length)
-    console.log(count)
     return count
   }
 
@@ -118,10 +148,10 @@ export default class DailyAnswerScreen extends Component {
       </View>
         <View>
           <View>
-            <Text style={styles.ampStyle}>{"Application: "}{daily.application}</Text>
+            <Text style={styles.ampStyle}>{"Application: "}{daily.application}{"\n"}</Text>
           </View>
           <View>
-            <Text style={styles.ampStyle}>{"Memory Verse: "}{daily["memory-verse"]}</Text>
+            <Text style={styles.ampStyle}>{"Memory Verse: "}{daily["memory-verse"]}{"\n"}</Text>
           </View>
           <View>
             <Text style={styles.ampStyle}>{"Prayer: "}{daily.prayer}</Text>
@@ -153,13 +183,14 @@ const styles = StyleSheet.create({
   daily: {
     backgroundColor: 'white',
     flex: 1,
-    borderRadius: 15,
+    borderRadius: 8,
     padding: 10,
-    marginRight: 10, // toheeb this is where you edit this bubble thingy that the words are in
-    marginLeft: 10,
+    marginRight: 15, // toheeb this is where you edit this bubble thingy that the words are in
+    marginLeft: 15,
     marginTop: 17,
-    borderWidth: 3,
-    borderColor: '#e3e2e9',
+    borderTopWidth: 2,
+    borderBottomWidth: 2,
+    borderColor: '#d8d1c0', //#d8d1c0
     padding: 15,
     paddingTop: 25
     // borderColor: '#e6f0ff'
@@ -179,6 +210,8 @@ const styles = StyleSheet.create({
     alignSelf: 'center',
     width: 100,
     height: 20
-  },
+  }
 
 });
+
+AppRegistry.registerComponent('DailyAnswerScreen', () => DailyAnswerScreen);

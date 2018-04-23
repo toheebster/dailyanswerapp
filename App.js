@@ -1,7 +1,7 @@
 import React from 'react';
 import { StyleSheet, Text, View, Image } from 'react-native';
 import DailyAnswerScreen from './src/dailyAnswer';
-import WelcomeModal from './src/welcome';
+import WelcomeScreen from './src/welcome';
 import { StackNavigator } from 'react-navigation';
 
 export default class App extends React.Component {
@@ -17,8 +17,7 @@ export default class App extends React.Component {
 }
 
 const DailyAnswerApp = StackNavigator({
-  Home: {screen: DailyAnswerScreen},
-  Welcome: {screen: WelcomeModal}
+  Home: {screen: DailyAnswerScreen}
 })
 
 const styles = StyleSheet.create({
