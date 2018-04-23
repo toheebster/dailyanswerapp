@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import { AppRegistry, Text, View, StyleSheet, Dimensions, Image } from 'react-native';
 import WelcomeScreen from './welcome'
+import { DeviceType, DeviceModel, DeviceWidth } from './helpers'
 import { Agenda } from 'react-native-calendars';
 import Swiper from 'react-native-swiper';
 import dailiesJSON from '../dailyprod.json';
@@ -85,7 +86,7 @@ export default class DailyAnswerScreen extends Component {
             }
             this.state.dailies[strTime].push(daily)
           } else {
-            console.log(`Bad daily or date index alert. Date index string is ${strTime}`)
+            // console.log(`Bad daily or date index alert. Date index string is ${strTime}`)
           }
       }
       const newDailies = {};
@@ -97,9 +98,10 @@ export default class DailyAnswerScreen extends Component {
   }
 
   getHeightForDaily(daily) { // TO DO : break logic out for android as well
+
     // each line for the average screen size is about 50 characters long and about 10pixels tall
     let heightPerLine = this.getHeightPerLine()
-    let roughEstimateOfCharactersPerLine = 50
+    let roughEstimateOfCharactersPerLine = this.getRoughEstimateOfCharactersPerLine()
     let heightBuffer = 345
     let numberOfCharactersInDaily = this.getCharacterCountForDaily(daily)
     let numberOfLinesInDaily = numberOfCharactersInDaily / roughEstimateOfCharactersPerLine
@@ -108,15 +110,48 @@ export default class DailyAnswerScreen extends Component {
   }
 
   getHeightPerLine() {
-    let screenWidth = this.getScreenWidth()
-    if (screenWidth > 370 && screenWidth < 400) { // iphone x & 6/7 - 375
-      return 17
+    switch (DeviceType()) {
+      case DeviceModel.IPHONE_REGULAR:
+        return 17
+        break
+      case DeviceModel.IPHONE_PLUSX:
+        return 15
+        break
+      case DeviceModel.IPHONE_BABY:
+        return 21
+        break
+      default:
+        return 21
+
     }
-    else if (screenWidth > 400 && screenWidth < 420) { // iphone 6/7 plus
-      return 15
-    }
-    else {// (screenWidth > 300 && screenWidth < 325) { // iphone 5 & 4
-      return 21
+  }
+
+  getRoughEstimateOfCharactersPerLine() { // get this out for ipad
+    // ipad 12.9 -> 1024
+    // ipad 10.5 -> 834
+    // ipad 9.7 -> 768
+    console.log(DeviceType())
+    switch (DeviceType()) {
+      case DeviceModel.IPHONE_BABY:
+        return 43
+        break
+      case DeviceModel.IPHONE_REGULAR:
+        return 44
+        break
+      case DeviceModel.IPHONE_PLUSX:
+        return 45
+        break
+      case DeviceModel.IPAD_12POINT9:
+        return 90
+        break
+      case DeviceModel.IPAD_10POINT5:
+        return 80
+        break
+      case DeviceModel.IPAD_9POINT7:
+        return 65
+        break
+      default:
+        return 60
     }
   }
 
@@ -125,7 +160,7 @@ export default class DailyAnswerScreen extends Component {
   }
 
   isBigPhone() {
-    return this.getScreenWidth() > 14
+    return DeviceWidth > 14
   }
 
   getCharacterCountForDaily(daily) {
@@ -138,23 +173,27 @@ export default class DailyAnswerScreen extends Component {
     return (
       <View style={[styles.daily, {height: daily.height}]}>
       <View>
-        <Text style={styles.titleStyle}>{daily.title}{"\n"}</Text>
+        <Text style={styles.titleStyle} allowFontScaling={false}>{daily.title}{"\n"}</Text>
         <Text style={styles.passageStyle}>{daily.passage}{"\n"}</Text>
         <Image
           style={styles.delimiter}
           source={require('./img/delimiter.png')}
         />
-        <Text style={styles.contentStyle}>{"\n"}{daily.content}{"\n"}</Text>
+        <Text allowFontScaling={false} style={styles.contentStyle}>{"\n"}{daily.content}{"\n\n"}</Text>
+        <Image
+          style={styles.delimiter}
+          source={require('./img/delimiter.png')}
+        />
       </View>
         <View>
           <View>
-            <Text style={styles.ampStyle}>{"Application: "}{daily.application}{"\n"}</Text>
+            <Text allowFontScaling={false} style={styles.ampStyle}>{"\n"}{"Application: "}{daily.application}{"\n"}</Text>
           </View>
           <View>
-            <Text style={styles.ampStyle}>{"Memory Verse: "}{daily["memory-verse"]}{"\n"}</Text>
+            <Text allowFontScaling={false} style={styles.ampStyle}>{"Memory Verse: "}{daily["memory-verse"]}{"\n"}</Text>
           </View>
           <View>
-            <Text style={styles.ampStyle}>{"Prayer: "}{daily.prayer}</Text>
+            <Text allowFontScaling={false} style={styles.ampStyle}>{"Prayer: "}{daily.prayer}</Text>
           </View>
         </View>
       </View>
@@ -184,10 +223,11 @@ const styles = StyleSheet.create({
     backgroundColor: 'white',
     flex: 1,
     borderRadius: 8,
-    padding: 10,
+    padding: 5,
     marginRight: 15, // toheeb this is where you edit this bubble thingy that the words are in
     marginLeft: 15,
     marginTop: 17,
+    marginBottom: 20,
     borderTopWidth: 2,
     borderBottomWidth: 2,
     borderColor: '#d8d1c0', //#d8d1c0
@@ -203,9 +243,9 @@ const styles = StyleSheet.create({
   headers: {
   },
   titleStyle: {fontWeight: 'bold', fontFamily: 'Helvetica-Bold', fontSize: 20, color: '#333333'}, // toheeb change to percentage using npm install react-native-viewport-units --save
-  passageStyle: {fontSize: 12, fontFamily: 'Hiragino Sans', fontWeight: '100'},
-  contentStyle: { fontFamily: 'Hiragino Sans', fontSize: 12, fontWeight: '400'},
-  ampStyle: { fontFamily: 'Hiragino Sans', fontSize: 12, fontWeight: '500', color: '#333333'},
+  passageStyle: {fontSize: 14, fontFamily: 'Damascus', fontWeight: '400'},
+  contentStyle: { fontFamily: 'Damascus', fontSize: 14, fontWeight: '400'},
+  ampStyle: { fontFamily: 'Damascus', fontSize: 14, fontWeight: '400'},
   delimiter: { // maintain width/height 20% ratio
     alignSelf: 'center',
     width: 100,

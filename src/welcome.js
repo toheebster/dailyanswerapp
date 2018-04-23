@@ -9,12 +9,12 @@ export default class WelcomeScreen extends Component {
 
   render() {
     return (
-      <ScrollView>
+      <ScrollView style={styles.scrollViewStyles}>
         <View style={styles.welcomeTextView}>
-          <Image
+          {/* <Image
             style={styles.delimiter}
             source={require('./img/delimiter.png')}
-          />
+          /> */}
           <Text style={styles.welcomeText}>{'\n\n'}Dear Reader,{'\n\n'}
             I celebrate with you as God has ushered you into the New Year 2018.
             I believe that you will experience God’s grace and mercy this year,
@@ -32,10 +32,10 @@ export default class WelcomeScreen extends Component {
             Shalom and Remain Blessed,{"\n"}
             Prophetess Talabi{'\n\n'}
           </Text>
-          <Image
+          {/* <Image
             style={styles.delimiter}
             source={require('./img/delimiter.png')}
-          />
+          /> */}
         </View>
       </ScrollView>
     );
@@ -64,6 +64,9 @@ const styles = StyleSheet.create({
     width: 100,
     height: 20
   },
+  scrollViewStyles: {
+    backgroundColor: '#7a92a5'
+  }
 });
 
 
