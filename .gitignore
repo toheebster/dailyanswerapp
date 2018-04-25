@@ -5,6 +5,7 @@
 
 # dependencies
 /node_modules/*
+/appstore/*
 
 # misc
 .env.local
