@@ -6,7 +6,7 @@
     "icon": "./assets/icons/icon-1024.png",
     "version": "1.0.0",
     "slug": "daily-answer-build-1",
-    "platfroms": ["ios"],
+    "platforms": ["ios"],
     "primaryColor": "#ffffff",
     "ios": {
       "supportsTablet": true,
