@@ -1,6 +1,24 @@
 {
   "expo": {
+    "name": "Daily Answer",
     "sdkVersion": "23.0.0",
-    "orientation": "portrait"
+    "orientation": "portrait",
+    "icon": "./assets/icons/icon-1024.png",
+    "version": "1.0.0",
+    "slug": "daily-answer-build-1",
+    "platfroms": ["ios"],
+    "primaryColor": "#ffffff",
+    "ios": {
+      "supportsTablet": true,
+      "bundleIdentifier": "com.chec.dailyanswer",
+      "buildNumber": "1.0.0",
+      "splash": {
+        "image": "./assets/iphone-splash.png",
+        "tabletImage": "./assets/ipad-splash.png",
+        "resizeMode": "contain",
+        "backgroundColor": "#ffffff"
+      }
+    }
+
   }
 }
