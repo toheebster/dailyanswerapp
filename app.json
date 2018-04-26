@@ -4,7 +4,7 @@
     "sdkVersion": "23.0.0",
     "orientation": "portrait",
     "icon": "./assets/icons/icon-1024.png",
-    "version": "1.0.0",
+    "version": "1.0.1",
     "slug": "daily-answer-build-1",
     "platforms": ["ios"],
     "primaryColor": "#ffffff",
@@ -17,6 +17,9 @@
         "tabletImage": "./assets/ipad-splash.png",
         "resizeMode": "contain",
         "backgroundColor": "#ffffff"
+      },
+      "infoPlist": {
+        "NSLocationAlwaysUsageDescription": "Daily Answer requires your location in order to give you the best experience"
       }
     }
 
